@@ -20,7 +20,7 @@ A movie passes the test if:
 The DocETL pipeline this repository uses is as follows:
 
 1. Extract potential dialogue and character names
-2. Infer character genders (🤖 **Femputer**)
+2. Infer character genders using LLM (🤖 **Femputer**)
 3. Filter conversations involving women
 4. Evaluate whether the script passes the Bechdel Test using LLM reasoning (🤖 **Femputer**)
 

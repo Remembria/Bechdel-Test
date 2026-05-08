@@ -1,5 +1,4 @@
 [workspace]
-authors = ["remembermebjorn <bjorn.behzadholst@gmail.com>"]
 channels = ["conda-forge"]
 name = "bechdel_test"
 platforms = ["osx-arm64"]
