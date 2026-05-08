@@ -1,0 +1,7 @@
+.pixi/*
+!.pixi/config.toml
+.env
+data/processed/*
+results/*
+.ipynb_checkpoints
+__pycache__/

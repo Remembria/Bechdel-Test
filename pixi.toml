@@ -1,0 +1,14 @@
+[workspace]
+authors = ["remembermebjorn <bjorn.behzadholst@gmail.com>"]
+channels = ["conda-forge"]
+name = "bechdel_test"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[dependencies]
+python = ">3.10"
+
+[pypi-dependencies]
+docetl = ">=0.2.6, <0.3"
+pyrate_limiter = "<=3.7.0"
+litellm = { version = ">=1.83.0, <2", extras = ["google"] }
