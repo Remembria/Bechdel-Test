@@ -20,7 +20,7 @@ A movie passes the test if:
 The DocETL pipeline this repository uses is as follows:
 
 1. Extract potential dialogue and character names
-2. Infer character genders (🤖 **Femputer**) 
+2. Infer character genders (🤖 **Femputer**)
 3. Filter conversations involving women
 4. Evaluate whether the script passes the Bechdel Test using LLM reasoning (🤖 **Femputer**)
 
@@ -44,7 +44,7 @@ A sample `.env` file is provided.
 
 DocETL uses LiteLLM under the hood, so many providers are supported.
 
-I personally used the **free tier** of `gemini-2.5-flash`.
+The default model, `gemini-2.5-flash`, has a **free tier** with a limited number of queries per minute and per day.
 
 To change models:
 
@@ -77,9 +77,9 @@ Many more scripts can be found on https://imsdb.com/.
     └── utils.py
 ```
 
-## :crystal_ball: Sample Command
+## :dizzy: Commands
 
-First activate the pixi environment with
+The pixi environment is activated with
 
 ```bash
 pixi shell
