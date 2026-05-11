@@ -1,3 +1,7 @@
+"""
+Contains util functions for both the pipeline, and pretty print used by run_bechdel.py
+"""
+
 from rich.console import Console
 from rich.panel import Panel
 
@@ -18,7 +22,7 @@ def extract_dialogue(doc: dict) -> dict:
         """Returns the hamming distance between two lists"""
         if len(s1) != len(s2):
             raise ValueError("Lists must have equal length")
-            
+
         return sum(el1 != el2 for el1, el2 in zip(s1, s2))
 
     def get_sections(text):
@@ -72,7 +76,7 @@ def extract_dialogue(doc: dict) -> dict:
             match = re.search(rf'[\s].*{n}.*[\s\.]', text, re.IGNORECASE)
             if match:
                 name_dict[n] = " ".join(match.group().split())[:max_context_size]
-        
+
         return name_dict
 
     def retrieve_dialogue(dialogue_sections, merged_sections):
@@ -85,7 +89,8 @@ def extract_dialogue(doc: dict) -> dict:
         cd = ""
         for i in dialogue_sections:
             if i != c + 1:
-                if cd != "": dialogue.append(cd)
+                if cd != "":
+                    dialogue.append(cd)
                 cd = merged_sections[i]
                 c = i
             else:
@@ -97,41 +102,40 @@ def extract_dialogue(doc: dict) -> dict:
     text = doc["text"]
     sections = get_sections(text)
 
-    NAME_LIMIT = 5 # Merged names must be less than or equal to NAME_LIMIT words
-    HAMMING_LIMIT = 2 # Merged names only HAMMING_LIMIT words can be uncapitalized
+    name_limit = 5 # Merged names must be less than or equal to name_limit words
+    hamming_limit = 2 # Merged names only hamming_limit words can be uncapitalized
 
     name_start = r'^(?:[A-Z]{3,10}\s?){0,3}[\n:]'
-    
+
     name_list = []
     dialogue_sections = []
     merged_sections = []
     joined_section = ""
-    for i in range(len(sections)):
-        if len(sections[i].split()) <= NAME_LIMIT and list_hamming_distance(sections[i].upper(), sections[i]) <= HAMMING_LIMIT:
-            joined_section += sections[i] + "\n"
-            name_list.append(sections[i].strip())
-            
+    for s in sections:
+        if len(s.split()) <= name_limit and list_hamming_distance(s.upper(), s) <= hamming_limit:
+            joined_section += s + "\n"
+            name_list.append(s.strip())
         else:
-            names = re.findall(name_start, sections[i].strip(), flags=re.MULTILINE)
+            names = re.findall(name_start, s.strip(), flags=re.MULTILINE)
             if joined_section != "" or names:
                 dialogue_sections.append(len(merged_sections))
             if names:
                 name_list.extend(list(map(lambda x: x.strip(), names)))
-                
-            joined_section += sections[i]
+
+            joined_section += s
             merged_sections.append(joined_section)
             joined_section = ""
 
-    
+
     # Retrieve the dialogue alone
     dialogue = retrieve_dialogue(dialogue_sections, merged_sections)
-    
+
     # Remove redundant spaces from dialogue to lower token count for LLMs later
     dialogue = list(map(lambda d : " ".join(filter(lambda x: x != '', d.split(" "))), dialogue))
 
     # Retrieve the first mention of each name
     name_dict = get_name_mentions(name_list, text)
-    
+
     return {"people": name_dict, "dialogue": dialogue}
 
 def filter_dialogue_for_women(doc: dict) -> dict:
@@ -175,4 +179,6 @@ def show_result(d):
     console = Console()
     result = "Pass" if d["passes_bechdel"] else "Fail"
     status_color = "green" if d["passes_bechdel"] else "red"
-    console.print(Panel(f"[bold {status_color}]{result}[/bold {status_color}]\n\n[bold {status_color}]{d['justification']}[/bold {status_color}]", title="Bechdel Test Result"))
+    panel_content = f"[bold {status_color}]{result}[/bold {status_color}]" + \
+                    f"\n\n[bold {status_color}]{d['justification']}[/bold {status_color}]"
+    console.print(Panel(panel_content, title="Bechdel Test Result"))

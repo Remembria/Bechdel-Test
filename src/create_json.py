@@ -1,3 +1,8 @@
+"""
+This module contains the code to convert .txt files to the \
+expected .json format the DocETL pipeline requires. 
+"""
+
 import json
 import argparse
 from pathlib import Path
@@ -11,9 +16,8 @@ def txt_to_json(filepath):
     txt_in = Path(filepath)
 
     if not txt_in.exists():
-        print(f"Error: File '{txt_in}' not found.")
-        return
-    
+        return TypeError("File '{txt_in}' not found.")
+
     output_dir = Path("data/processed")
     json_out = output_dir / txt_in.with_suffix(".json").name
 

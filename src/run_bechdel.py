@@ -1,3 +1,7 @@
+"""
+This module contains the core DocETL reasoning pipeline for running the Bechdel Test.
+"""
+
 from docetl.api import Pipeline, Dataset, MapOp, CodeMapOp, PipelineOutput, PipelineStep
 import json
 import argparse
@@ -34,7 +38,7 @@ if __name__ == "__main__":
             name="get_gendered_names",
             type="map",
             prompt=SYSTEM_PROMPT + CHECK_NAMES_PROMPT,
-            output={"schema": { 
+            output={"schema": {
                 "names" : "list[string]", 
                 "genders" : "list[string]"
                 }},
@@ -49,7 +53,7 @@ if __name__ == "__main__":
             name="bechdel",
             type="map",
             prompt=SYSTEM_PROMPT + BECHDEL_PROMPT,
-            output={"schema": { 
+            output={"schema": {
                 "passes_bechdel" : "boolean", 
                 "justification" : "string"
                 }},
@@ -96,8 +100,9 @@ if __name__ == "__main__":
 
     results = pipeline.run()
 
-    with open(out_file, 'r') as file:
+    with open(out_file, 'r', encoding='utf-8') as file:
         data = json.load(file)
-    
+
     for d in data:
         show_result(d)
+        break
